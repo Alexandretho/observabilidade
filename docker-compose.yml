@@ -1,0 +1,48 @@
+version: '3'
+services:
+  wiki:
+    image: requarks/wiki
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_TYPE=mariadb
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASS=example
+      - DB_NAME=wiki
+    depends_on:
+      - mariadb
+  mariadb:
+    image: mariadb:10
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+      - MYSQL_DATABASE=wiki
+    volumes:
+      - mariadb-data:/var/lib/mysql
+  nginx:
+    image: nginx
+    ports:
+      - "8023:80"
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_DISABLE_LOGIN_FORM=false
+    volumes:
+      - grafana-storage:/var/lib/grafana
+volumes:
+  grafana-storage:
+  mariadb-data:
