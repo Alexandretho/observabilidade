@@ -23,10 +23,6 @@ services:
       - MYSQL_DATABASE=wiki
     volumes:
       - mariadb-data:/var/lib/mysql
-  nginx:
-    image: nginx
-    ports:
-      - "8023:80"
   prometheus:
     image: prom/prometheus
     volumes:
